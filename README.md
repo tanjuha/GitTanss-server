@@ -1,8 +1,8 @@
-        Server
+        Server:
         
-1. branch master;
+1. Branch master;
 	
-	Database
+	Database:
 	
 	a. create new database (pgAdmin) -> gittanss;
 	
