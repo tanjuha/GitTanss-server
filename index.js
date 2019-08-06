@@ -70,7 +70,23 @@ app.post(apiUrl + '/authenticate', (req, resp) => {
         console.log(err);
         resp.status(500).send('user query problems');
     });
-})
+});
+
+    app.get(apiUrl + '/projects', (req, resp) => {
+        Projects.findAll({
+            order: [
+                ['id', 'DESC']
+            ]
+        })
+            .then(projects => {
+                resp.json(projects);
+            })
+            .catch(err => {
+                console.log(err);
+                resp.sendStatus(500);
+            })
+
+    });
 
     app.post(apiUrl + '/registration', (req, resp) => {
     const username = req.body.username;
@@ -105,7 +121,7 @@ app.post(apiUrl + '/authenticate', (req, resp) => {
         console.log(err);
         resp.status(500).send('user query problems');
     });
-})
+});
 
 app.get(apiUrl + '/projects/user/:id', (req, resp) => {
     const userId = req.params.id;
@@ -113,6 +129,9 @@ app.get(apiUrl + '/projects/user/:id', (req, resp) => {
         resp.status(400).send("Bad id");
     }
     Users.findByPk(userId, {
+        order: [
+            ['id', 'DESC']
+        ],
         include: [
             {
                 model: Projects,
@@ -128,12 +147,12 @@ app.get(apiUrl + '/projects/user/:id', (req, resp) => {
                 const response = [];
                 user.projects.forEach(project => {
                     response.push({
-                        projectId: project.id,
+                        id: project.id,
                         title: project.title,
                         description: project.description,
                         roleName: project.UsersProjects.roleName
                     })
-                })
+                });
                 resp.json(response);
                 resp.sendStatus(200);
             }
@@ -142,7 +161,7 @@ app.get(apiUrl + '/projects/user/:id', (req, resp) => {
             console.log(err);
             resp.sendStatus(500);
         })
-})
+});
 
 
 app.delete(apiUrl + '/projects/:id', (req, resp) => {
@@ -160,7 +179,7 @@ app.delete(apiUrl + '/projects/:id', (req, resp) => {
                 id: projectId
             }
         }).then(project => {
-            resp.json(pro)
+            resp.json(pro);
             resp.sendStatus(200);
         })
     }).catch(err => {
@@ -201,18 +220,30 @@ app.post(apiUrl + '/project', (req, resp) => {
     })
 })
 
-app.put(apiUrl + '/projects', (req, resp) => {
+app.put(apiUrl + '/projects/:id', (req, resp) => {
+    const projectId = req.params.id;
     const title = req.body.title;
     const description = req.body.description;
     if(!(title && description)) {
         resp.sendStatus(400);
     }
-    Projects.update({
-        title: title,
-        description: description
-    }).then(project => {
-        resp.json(project);
-        resp.sendStatus(200);
+    Projects.update(
+        {
+            title: title,
+            description: description
+        },
+        {
+            where: {
+                id: projectId
+            }
+        }
+    ).then(result => {
+        if (result >= 1) {
+            Projects.findByPk(projectId).then(project => {
+                resp.json(project);
+                resp.sendStatus(200);
+            })
+        }
     }).catch(err => {
         console.log(err);
         resp.sendStatus(500);

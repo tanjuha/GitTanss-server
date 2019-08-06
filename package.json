@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && nodemon index.js"
   },
   "author": "tanjuha",
   "license": "ISC",

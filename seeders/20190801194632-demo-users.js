@@ -4,26 +4,26 @@ const salt = 10;
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    const hash = bcrypt.hashSync('password', salt)
+    const hash = bcrypt.hashSync('password', salt);
     return queryInterface.bulkInsert('users', [
       {
         username: 'tom',
-        email: 'tom@email.com',
+        email: 'tom@gmail.com',
         password: hash
       },
       {
         username: 'sem',
-        email: 'sem@email.com',
+        email: 'sem@gmail.com',
         password: hash
       },
       {
         username: 'tanjuha',
-        email: 'tanjuha@email.com',
+        email: 'tanjuha@gmail.com',
         password: hash
       },
       {
         username: 'bob',
-        email: 'bob@email.com',
+        email: 'bob@gmail.com',
         password: hash
     }
     ], {})
